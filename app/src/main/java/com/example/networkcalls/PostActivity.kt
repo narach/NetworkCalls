@@ -24,9 +24,11 @@ class PostActivity : AppCompatActivity() {
         binding = ActivityPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        postId = intent.getIntExtra("postId", -1)
+
         binding.apply {
             btnSavePost.setOnClickListener {
-                if(postId == null) {
+                if(postId == -1) {
                     var newPost = NewPost(
                         etPostTitle.text.toString(),
                         etPostBody.text.toString(),
