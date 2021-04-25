@@ -10,6 +10,16 @@ interface PostsApi {
     @GET("/posts")
     suspend fun getPosts(): Response<List<Post>>
 
+    @GET("/posts")
+    suspend fun getPostsByUser(
+        @Query("userId") userId: Int
+    ): Response<List<Post>>
+
+    @GET("/posts/{postId}")
+    suspend fun getPostById(
+        @Path("postId") postId: Int
+    ) : Response<Post>
+
     @POST("/posts")
     suspend fun createPost(@Body Post: NewPost): Response<Post>
 

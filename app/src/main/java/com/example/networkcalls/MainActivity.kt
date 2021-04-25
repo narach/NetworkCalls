@@ -5,11 +5,16 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.networkcalls.adapters.TodoAdapter
 import com.example.networkcalls.databinding.ActivityMainBinding
 import com.example.networkcalls.network.RetrofitInstance
+import com.example.networkcalls.repositories.PostRepository
+import com.example.networkcalls.viewmodels.PostsViewModel
+import com.example.networkcalls.viewmodels.factories.PostsViewModelFactory
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -21,10 +26,20 @@ class MainActivity : AppCompatActivity(), ICommunication {
 
     private lateinit var todoAdapter: TodoAdapter
 
+    private lateinit var viewModel: PostsViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Инициализируем ViewModel
+        val postRepository = PostRepository()
+        val viewModelFactory = PostsViewModelFactory(postRepository)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PostsViewModel::class.java)
+
+
+
         // Инициализируем RecyclerView
         setupRecyclerView()
 
@@ -55,6 +70,18 @@ class MainActivity : AppCompatActivity(), ICommunication {
                 Intent(this@MainActivity, PostActivity::class.java).also {
                     startActivity(it)
                 }
+            }
+
+            btnSelectUser.setOnClickListener {
+                val postId = etUserSelect.text.toString().toInt()
+                viewModel.getPostById(postId)
+                viewModel.selectedPost.observe(this@MainActivity, Observer { response ->
+                    if (response.isSuccessful) {
+                        Log.d(TAG, "Selected post: ${response.body()}")
+                    } else {
+                        Log.e(TAG, "Error code: ${response.code()}, error message: ${response.message()}")
+                    }
+                })
             }
         }
 
