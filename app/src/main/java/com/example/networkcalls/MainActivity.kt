@@ -1,22 +1,21 @@
 package com.example.networkcalls
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.networkcalls.adapters.TodoAdapter
 import com.example.networkcalls.databinding.ActivityMainBinding
-import com.example.networkcalls.entities.NewPost
-import com.example.networkcalls.entities.Post
 import com.example.networkcalls.network.RetrofitInstance
 import retrofit2.HttpException
 import java.io.IOException
 
 const val TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ICommunication {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -51,22 +50,19 @@ class MainActivity : AppCompatActivity() {
             binding.progressBar.isVisible = false
         }
 
-        getPosts()
-        var newPostId = placeNewPost(
-            NewPost(
-                "Prepare materials and examples for Android course lesson",
-                "Weekend task",
-                1
-            )
-        )
-        newPostId?.let { postId ->
-            rewritePost(postId)
+        with(binding) {
+            btnNewPost.setOnClickListener {
+                Intent(this@MainActivity, PostActivity::class.java).also {
+                    startActivity(it)
+                }
+            }
         }
 
+        getPosts()
     }
 
     private fun setupRecyclerView() = binding.rvTodos.apply {
-        todoAdapter = TodoAdapter()
+        todoAdapter = TodoAdapter(this@MainActivity)
         adapter = todoAdapter
         layoutManager = LinearLayoutManager(this@MainActivity)
     }
@@ -91,52 +87,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun placeNewPost(newPost: NewPost) : Int? {
-        var createdPost: Post? = null
-        var newPostId: Int? = null
-        lifecycleScope.launchWhenCreated {
-            val response = try {
-                RetrofitInstance.postsApi.createPost(newPost)
-            } catch (e: IOException) { // Для No Internet Connection
-                Log.e(TAG, "IOException, you might not have internet connection")
-                return@launchWhenCreated
-            } catch (e: HttpException) {
-                Log.e(TAG, "HttpException, unexpected response")
-                return@launchWhenCreated
-            }
-            if (response.isSuccessful && response.body() != null) {
-                createdPost = response.body()!!
-                newPostId = createdPost!!.id
-                Log.d(TAG, "Newly created post: $createdPost")
-            } else {
-                Log.e(TAG, "Response was not successful. Error code: ${response.code()}")
-            }
-        }
-        return newPostId
-    }
-
-    private fun rewritePost(postId: Int) {
-        lifecycleScope.launchWhenCreated {
-            val newPost = Post(postId,
-                "Weekend Task",
-                "Prepare new lection about Retrofit for Android course",
-                1
-            )
-            val response = try {
-                RetrofitInstance.postsApi.rewritePost(postId, newPost)
-            } catch (e: IOException) { // Для No Internet Connection
-                Log.e(TAG, "IOException, you might not have internet connection")
-                return@launchWhenCreated
-            } catch (e: HttpException) {
-                Log.e(TAG, "HttpException, unexpected response")
-                return@launchWhenCreated
-            }
-            if (response.isSuccessful && response.body() != null) {
-                var rewritePost = response.body()!!
-                Log.d(TAG, "Newly created post: $rewritePost")
-            } else {
-                Log.e(TAG, "Response was not successful. Error code: ${response.code()}")
-            }
+    override fun openPostActivity() {
+        Intent(this@MainActivity, PostActivity::class.java).also {
+            it.putExtra("postId", 1)
+            startActivity(it)
         }
     }
 }

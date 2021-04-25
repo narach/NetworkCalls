@@ -22,7 +22,7 @@ interface PostsApi {
     @DELETE("/posts/{postId}")
     suspend fun deletePost(
         @Path("postId") postId: Int
-    )
+    ) : Response<Any>
 
     @PATCH("/posts/{postId}")
     suspend fun updatePost(
