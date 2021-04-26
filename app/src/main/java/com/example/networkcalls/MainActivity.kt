@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.networkcalls.adapters.TodoAdapter
 import com.example.networkcalls.databinding.ActivityMainBinding
+import com.example.networkcalls.entities.Weather
 import com.example.networkcalls.network.RetrofitInstance
 import com.example.networkcalls.repositories.PostRepository
 import com.example.networkcalls.viewmodels.PostsViewModel
@@ -83,9 +84,13 @@ class MainActivity : AppCompatActivity(), ICommunication {
                     }
                 })
             }
+
+            btnGetWeather.setOnClickListener {
+                getWeather()
+            }
         }
 
-        getPosts()
+//        getPosts()
     }
 
     private fun setupRecyclerView() = binding.rvTodos.apply {
@@ -112,6 +117,29 @@ class MainActivity : AppCompatActivity(), ICommunication {
                 Log.e(TAG, "Response was not successful. Error code: ${response.code()}")
             }
         }
+    }
+
+    private fun getWeather() : Weather? {
+        var weatherData: Weather? = null
+        lifecycleScope.launchWhenCreated {
+            val response = try {
+                RetrofitInstance.weatherApi.getWeatherInGomel()
+            } catch(e: IOException) { // Для No Internet Connection
+                Log.e(TAG, "IOException, you might not have internet connection")
+                Log.e(TAG, e.message!!)
+                return@launchWhenCreated
+            } catch(e: HttpException) {
+                Log.e(TAG, "HttpException, unexpected response")
+                return@launchWhenCreated
+            }
+            if(response.isSuccessful && response.body() != null) {
+                weatherData = response.body()!!
+                Log.d(TAG, "Current weather in Gomel: $weatherData")
+            } else {
+                Log.e(TAG, "Response was not successful. Error code: ${response.code()}")
+            }
+        }
+        return weatherData
     }
 
     override fun openPostActivity() {

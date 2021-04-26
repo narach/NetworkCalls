@@ -25,4 +25,12 @@ object RetrofitInstance {
             .build()
             .create(PostsApi::class.java)
     }
+
+    val weatherApi: WeatherApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(Constants.openWeatherBaseURL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(WeatherApi::class.java)
+    }
 }
