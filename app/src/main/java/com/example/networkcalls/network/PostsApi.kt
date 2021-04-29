@@ -21,7 +21,9 @@ interface PostsApi {
     ) : Response<Post>
 
     @POST("/posts")
-    suspend fun createPost(@Body Post: NewPost): Response<Post>
+    suspend fun createPost(
+            @Body Post: NewPost
+    ): Response<Post>
 
     @PUT("/posts/{postId}")
     suspend fun rewritePost(
@@ -39,4 +41,33 @@ interface PostsApi {
         @Path("postId") postId: Int
     )
     // Если надо передавать параметры fun getTodos(@Query("key") key: String): Response<List<Todo>>
+
+    // Пример с QueryMap - несколько параметров в запросе.
+    @GET("posts")
+    suspend fun getCustomPosts(
+            @Query("userId") userId: Int,
+            @Query("_sort") sort: String,
+            @Query("_order") order: String
+    ): Response<List<Post>>
+
+    // Пример с QueryMap - несколько параметров в запросе.
+    @GET("posts")
+    suspend fun getCustomPosts2(
+            @Query("userId") userId: Int,
+            @QueryMap options: Map<String, String>
+    ): Response<List<Post>>
+
+    @POST("posts")
+    suspend fun pushPost(
+            @Body post: Post
+    ): Response<Post>
+
+    @FormUrlEncoded
+    @POST("posts")
+    suspend fun pushPost2(
+            @Field("userId") userId: Int,
+            @Field("id") id: Int,
+            @Field("title") title: String,
+            @Field("title") body: String
+    ): Response<Post>
 }
