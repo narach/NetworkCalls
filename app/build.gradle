@@ -67,6 +67,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     // Библиотека HttpOk - Retrofit реализован на ее основе
     implementation "com.squareup.okhttp3:okhttp:4.9.0"
+    // Добавляем Interceptors для кастомизации хедеров.
+    implementation "com.squareup.okhttp3:logging-interceptor:4.5.0"
 
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
 

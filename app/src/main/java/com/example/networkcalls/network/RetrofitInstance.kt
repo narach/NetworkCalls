@@ -1,12 +1,17 @@
 package com.example.networkcalls.network
 
 import com.example.networkcalls.utils.Constants
+import okhttp3.OkHttpClient
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
+
+    private val client = OkHttpClient.Builder().apply {
+        addInterceptor(MyInterceptor())
+    }.build()
 
     // Объявляем как lazy, чтобы объект инициализировался при первом обращении
     val api: TodoApi by lazy {
@@ -17,7 +22,19 @@ object RetrofitInstance {
             .create(TodoApi::class.java) // Предоставляем API класс
     }
 
+    private val retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(Constants.sampleApiUrl)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
     val postsApi: PostsApi by lazy {
+        retrofit.create(PostsApi::class.java)
+    }
+
+    val postsApi2: PostsApi by lazy {
         Retrofit.Builder()
             .baseUrl(Constants.sampleApiUrl)
             .addConverterFactory(GsonConverterFactory.create())

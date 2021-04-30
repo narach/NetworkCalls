@@ -59,11 +59,13 @@ class PostActivity : AppCompatActivity() {
 
             btnGetCustomPosts.setOnClickListener {
 //                viewModel.getCustomPosts(1, "id", "desc")
+
                 val options: HashMap<String, String> = HashMap()
                 options["_sort"] = "id"
                 options["_order"] = "desc"
                 viewModel.getCustomPosts(3, options)
                 viewModel.myCustomPosts2.observe(this@PostActivity, { response ->
+                    Log.d("Headers", response.headers().toString())
                     response.body()?.forEach {
                         Log.d("Response", it.userId.toString())
                         Log.d("Response", it.id.toString())

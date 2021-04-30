@@ -7,6 +7,11 @@ import retrofit2.http.*
 
 interface PostsApi {
 
+    @GET("posts/1")
+    suspend fun getPost(
+        @Header("Auth") auth: String // Dynamically adding header
+    ): Response<Post>
+
     @GET("/posts")
     suspend fun getPosts(): Response<List<Post>>
 
@@ -52,6 +57,10 @@ interface PostsApi {
 
     // Пример с QueryMap - несколько параметров в запросе.
     @GET("posts")
+    @Headers(
+        "Authorization: 123123123",
+        "Platform: Android"
+    )
     suspend fun getCustomPosts2(
             @Query("userId") userId: Int,
             @QueryMap options: Map<String, String>
