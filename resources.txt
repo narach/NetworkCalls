@@ -1,0 +1,10 @@
+1) Retrofit Tutorial(5 parts): https://www.youtube.com/watch?v=uCJuprbXJk4
+2) Retrofit - Upload images to server: https://stackoverflow.com/questions/64748055/how-can-upload-image-to-server-with-retrofit-on-android
+2.1) Upload file to server video: https://www.youtube.com/watch?v=k67-FgvdlYw
+3) RecyclerView adapter: Building template - https://www.youtube.com/watch?v=TeVwYRSe_fA
+4) Dagger-Hilt Introduction; https://www.youtube.com/watch?v=ZE2Jkvnk2Bs
+4.1) Dependency Injection: Find Video & Article
+4.2) HiltViewModel: https://medium.com/mobile-app-development-publication/injecting-viewmodel-with-dagger-hilt-54ca2e433865
+4.3) HiltViewModel(Official): https://dagger.dev/hilt/view-model.html
+5) Android Application Context(Перевод): https://habr.com/ru/post/421115/
+6) Контекст - объяснение: http://developer.alexanderklimov.ru/android/theory/context.php
