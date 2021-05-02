@@ -10,6 +10,7 @@ import retrofit2.http.Part
 
 interface UploadPhotoApi {
 
+    // Doesn't work! Replace @Multipart with @FormUrlEncoded
     @Multipart
     @PATCH("photos")
     public fun uploadImage(

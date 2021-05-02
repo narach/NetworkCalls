@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.networkcalls.databinding.ActivityImageUploadBinding
 import com.example.networkcalls.network.*
@@ -86,9 +87,14 @@ class ImageUploadActivity : UploadRequestBody.UploadCallback, AppCompatActivity(
                 call: Call<UploadResponse>,
                 response: Response<UploadResponse>
             ) {
-                response.body()?.let {
-                    binding.layoutRoot.snackbar("File was upload successfully!")
-                    binding.pbUploadStatus.progress = 100
+                if(response.code() != 200) {
+                    binding.layoutRoot.snackbar("Failed when uploading file: ${response.errorBody()}")
+                    Log.e("ImageUplaod", response.toString())
+                } else {
+                    response.body()?.let {
+                        binding.layoutRoot.snackbar("File was upload successfully!")
+                        binding.pbUploadStatus.progress = 100
+                    }
                 }
             }
 
