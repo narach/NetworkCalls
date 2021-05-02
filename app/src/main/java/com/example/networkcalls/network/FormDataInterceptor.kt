@@ -7,7 +7,7 @@ class FormDataInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
             .newBuilder()
-            .addHeader("Content-Type", "multipart/form-data")
+            .addHeader("Content-Type", "multipart/form-data;boundary=imageRequest${System.currentTimeMillis()}")
             .build()
         return chain.proceed(request)
     }

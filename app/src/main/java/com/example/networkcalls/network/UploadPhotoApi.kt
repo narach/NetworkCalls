@@ -21,13 +21,13 @@ interface UploadPhotoApi {
     companion object {
 
         private val client = OkHttpClient.Builder().apply {
-            addInterceptor(MyInterceptor())
+            addInterceptor(FormDataInterceptor())
         }.build()
 
         operator fun invoke(): UploadPhotoApi {
             return Retrofit.Builder()
                 .baseUrl("https://cardiary.herokuapp.com/api/v1/cars/1/")
-//                .client(client)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(UploadPhotoApi::class.java)
