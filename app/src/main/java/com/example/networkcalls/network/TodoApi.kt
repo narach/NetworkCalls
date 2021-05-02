@@ -1,12 +1,10 @@
 package com.example.networkcalls.network
 
-import com.example.networkcalls.entities.CreateTodoResponse
 import com.example.networkcalls.entities.Todo
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Query
 
 // Интерфейс для выполнения запросов к API
 interface TodoApi {

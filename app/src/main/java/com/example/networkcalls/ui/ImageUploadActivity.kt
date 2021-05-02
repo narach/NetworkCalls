@@ -6,8 +6,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.example.networkcalls.databinding.ActivityImageUploadBinding
 import com.example.networkcalls.network.*
+import com.example.networkcalls.repositories.CarsRepository
+import com.example.networkcalls.repositories.PostRepository
+import com.example.networkcalls.viewmodels.CarsViewModel
+import com.example.networkcalls.viewmodels.PostsViewModel
+import com.example.networkcalls.viewmodels.factories.CarsViewModelFactory
+import com.example.networkcalls.viewmodels.factories.PostsViewModelFactory
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,12 +27,26 @@ class ImageUploadActivity : UploadRequestBody.UploadCallback, AppCompatActivity(
 
     private var selectedImageUri: Uri? = null
 
+    private lateinit var viewModel: CarsViewModel
+
     private lateinit var binding: ActivityImageUploadBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityImageUploadBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val repository = CarsRepository()
+        val viewModelFactory = CarsViewModelFactory(repository)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(CarsViewModel::class.java)
+
+        viewModel.getCars()
+        viewModel.carsResponse.observe(this, { response ->
+            Log.d("Headers", response.headers().toString())
+            response.body()?.forEach { car ->
+                Log.d("CarsActivity", car.toString())
+            }
+        })
 
         with(binding) {
             ivPicture.setOnClickListener {
@@ -54,7 +75,7 @@ class ImageUploadActivity : UploadRequestBody.UploadCallback, AppCompatActivity(
     private fun openImageChooser() {
         Intent(Intent.ACTION_PICK).also {
             it.type = "image/*"
-            val mimeTypes = arrayOf("image/jpeg", "image/png")
+            val mimeTypes = arrayOf("image/jpeg", "image/jpg", "image/png")
             it.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
             startActivityForResult(it, REQUEST_CODE_PICK_IMAGE)
         }
@@ -75,7 +96,8 @@ class ImageUploadActivity : UploadRequestBody.UploadCallback, AppCompatActivity(
         inputStream.copyTo(outputStream)
 
         binding.pbUploadStatus.progress = 0
-        val body = UploadRequestBody(file, "image", this)
+//        val body = UploadRequestBody(file, "multipart/form-data", this)
+        val body = UploadRequestBody(file, "photo", this)
         UploadPhotoApi().uploadImage(
             MultipartBody.Part.createFormData(
                 "photo",
@@ -89,7 +111,7 @@ class ImageUploadActivity : UploadRequestBody.UploadCallback, AppCompatActivity(
             ) {
                 if(response.code() != 200) {
                     binding.layoutRoot.snackbar("Failed when uploading file: ${response.errorBody()}")
-                    Log.e("ImageUplaod", response.toString())
+                    Log.e("ImageUpload", response.toString())
                 } else {
                     response.body()?.let {
                         binding.layoutRoot.snackbar("File was upload successfully!")

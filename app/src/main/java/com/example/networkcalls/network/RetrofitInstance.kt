@@ -34,6 +34,14 @@ object RetrofitInstance {
         retrofit.create(PostsApi::class.java)
     }
 
+    val carsApi: CarsApi by lazy {
+        Retrofit.Builder()
+            .baseUrl("https://cardiary.herokuapp.com/api/v1/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(CarsApi::class.java)
+    }
+
     val postsApi2: PostsApi by lazy {
         Retrofit.Builder()
             .baseUrl(Constants.sampleApiUrl)

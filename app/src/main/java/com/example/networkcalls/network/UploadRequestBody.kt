@@ -2,6 +2,7 @@ package com.example.networkcalls.network
 
 import android.os.Handler
 import android.os.Looper
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okio.BufferedSink
@@ -39,7 +40,7 @@ class UploadRequestBody(
     }
 
     companion object {
-        private const val DEFAULT_BUFFER_SIZE = 2048
+        private const val DEFAULT_BUFFER_SIZE = 20000
     }
 
     inner class ProgressUpdater(
