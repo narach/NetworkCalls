@@ -8,8 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.networkcalls.ICommunication
-import com.example.networkcalls.TAG
+import com.example.networkcalls.ui.ICommunication
 import com.example.networkcalls.databinding.ItemTodoBinding
 import com.example.networkcalls.entities.Todo
 import com.example.networkcalls.network.RetrofitInstance
@@ -18,6 +17,8 @@ import retrofit2.HttpException
 import java.io.IOException
 
 class TodoAdapter(val parentActivity: ICommunication) : RecyclerView.Adapter<TodoAdapter.TodoViewHolder>() {
+
+    private val TAG = "TodoAdapter"
 
     private var alertDialog: AlertDialog? = null
     private lateinit var context: Context

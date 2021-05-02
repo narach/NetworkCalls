@@ -1,4 +1,4 @@
-package com.example.networkcalls
+package com.example.networkcalls.ui
 
 import android.os.Bundle
 import android.util.Log
