@@ -1,11 +1,18 @@
 package com.example.networkcalls.ui
 
+import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.android.volley.toolbox.Volley
 import com.example.networkcalls.databinding.ActivityImageUploadBinding
@@ -14,6 +21,7 @@ import com.example.networkcalls.network.requests.FileDataPart
 import com.example.networkcalls.network.requests.VolleyFileUploadRequest
 import com.example.networkcalls.repositories.CarsRepository
 import com.example.networkcalls.repositories.PostRepository
+import com.example.networkcalls.utils.UploadUtility
 import com.example.networkcalls.viewmodels.CarsViewModel
 import com.example.networkcalls.viewmodels.PostsViewModel
 import com.example.networkcalls.viewmodels.factories.CarsViewModelFactory
@@ -62,8 +70,16 @@ class ImageUploadActivity : UploadRequestBody.UploadCallback, AppCompatActivity(
             }
 
             btnUpload.setOnClickListener {
-                uploadImage()
-//                uploadImageVolley()
+                // Upload file - Retrofit
+                // uploadImage()
+                // Upload file - Volley
+                // uploadImageVolley()
+                // Upload file - HttpOk
+                selectedImageUri?.let { imgUri ->
+                    if(askForPermissions()) {
+                        UploadUtility(this@ImageUploadActivity).uploadFile(imgUri)
+                    }
+                }
             }
         }
 
@@ -181,9 +197,64 @@ class ImageUploadActivity : UploadRequestBody.UploadCallback, AppCompatActivity(
 
     companion object {
         const val REQUEST_CODE_PICK_IMAGE = 101
+        const val REQUEST_PERMISSIONS_CODE = 102
     }
 
     override fun onProgressUpdate(percentage: Int) {
         binding.pbUploadStatus.progress = percentage
+    }
+
+    // Permissions processing functions
+    fun isPermissionsAllowed(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun askForPermissions(): Boolean {
+        if (!isPermissionsAllowed()) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                showPermissionDeniedDialog()
+            } else {
+                ActivityCompat.requestPermissions(this as Activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_PERMISSIONS_CODE)
+            }
+            return false
+        }
+        return true
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            REQUEST_PERMISSIONS_CODE -> {
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission is granted. Perform your operation here
+                } else {
+                    // permission is denied, you can ask for permission again, if you want
+                    //  askForPermissions()
+                }
+                return
+            }
+        }
+    }
+
+    private fun showPermissionDeniedDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Permission Denied")
+            .setMessage("Permission is denied, Please allow permissions from App Settings.")
+            .setPositiveButton("App Settings"
+            ) { _, _ ->
+                // send to app settings if permission is denied permanently
+                val intent = Intent()
+                intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                val uri = Uri.fromParts("package", packageName, null)
+                intent.data = uri
+                startActivity(intent)
+            }
+            .setNegativeButton("Cancel",null)
+            .show()
     }
 }
