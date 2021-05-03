@@ -3,13 +3,13 @@ package com.example.networkcalls.ui
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -20,12 +20,9 @@ import com.example.networkcalls.network.*
 import com.example.networkcalls.network.requests.FileDataPart
 import com.example.networkcalls.network.requests.VolleyFileUploadRequest
 import com.example.networkcalls.repositories.CarsRepository
-import com.example.networkcalls.repositories.PostRepository
 import com.example.networkcalls.utils.UploadUtility
 import com.example.networkcalls.viewmodels.CarsViewModel
-import com.example.networkcalls.viewmodels.PostsViewModel
 import com.example.networkcalls.viewmodels.factories.CarsViewModelFactory
-import com.example.networkcalls.viewmodels.factories.PostsViewModelFactory
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -92,27 +89,15 @@ class ImageUploadActivity : UploadRequestBody.UploadCallback, AppCompatActivity(
                 REQUEST_CODE_PICK_IMAGE -> {
                     selectedImageUri = data?.data
                     binding.ivPicture.setImageURI(selectedImageUri)
+                    // createImageData(uri) // Convert Uri to ByteArray
                 }
             }
         }
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_PICK_IMAGE) {
-//            val uri = data?.data
-//            if (uri != null) {
-//                binding.ivPicture.setImageURI(uri)
-//                createImageData(uri)
-//            }
-//        }
-//        super.onActivityResult(requestCode, resultCode, data)
-//    }
-
     private fun openImageChooser() {
         Intent(Intent.ACTION_PICK).also {
             it.type = "image/*"
-//            val mimeTypes = arrayOf("image/jpeg", "image/jpg", "image/png")
-//            it.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
             startActivityForResult(it, REQUEST_CODE_PICK_IMAGE)
         }
     }
@@ -130,8 +115,8 @@ class ImageUploadActivity : UploadRequestBody.UploadCallback, AppCompatActivity(
                 println("error is: $it")
             }
         ) {
-            override fun getByteData(): Map<String, FileDataPart>? {
-                var params = HashMap<String, FileDataPart>()
+            override fun getByteData(): Map<String, FileDataPart> {
+                val params = HashMap<String, FileDataPart>()
                 params["photo"] = FileDataPart("image", imageData!!, "jpg")
                 return params
             }
@@ -163,7 +148,6 @@ class ImageUploadActivity : UploadRequestBody.UploadCallback, AppCompatActivity(
         inputStream.copyTo(outputStream)
 
         binding.pbUploadStatus.progress = 0
-//        val body = UploadRequestBody(file, "multipart/form-data", this)
         val body = UploadRequestBody(file, "photo", this)
         UploadPhotoApi().uploadImage(
             MultipartBody.Part.createFormData(
@@ -205,12 +189,12 @@ class ImageUploadActivity : UploadRequestBody.UploadCallback, AppCompatActivity(
     }
 
     // Permissions processing functions
-    fun isPermissionsAllowed(): Boolean {
+    private fun isPermissionsAllowed(): Boolean {
         return ContextCompat.checkSelfPermission(
             this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
     }
 
-    fun askForPermissions(): Boolean {
+    private fun askForPermissions(): Boolean {
         if (!isPermissionsAllowed()) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 showPermissionDeniedDialog()
@@ -230,12 +214,11 @@ class ImageUploadActivity : UploadRequestBody.UploadCallback, AppCompatActivity(
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             REQUEST_PERMISSIONS_CODE -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // permission is denied, you can ask for permission again, if you want
+                //  askForPermissions()
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Permission is granted. Perform your operation here
-                } else {
-                    // permission is denied, you can ask for permission again, if you want
-                    //  askForPermissions()
-                }
+                } else Toast.makeText(this, "Read files permission is denied!", Toast.LENGTH_LONG).show()
                 return
             }
         }

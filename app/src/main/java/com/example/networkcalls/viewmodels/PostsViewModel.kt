@@ -7,17 +7,16 @@ import com.example.networkcalls.entities.Post
 import com.example.networkcalls.network.RetrofitInstance
 import com.example.networkcalls.repositories.PostRepository
 import kotlinx.coroutines.launch
-import okhttp3.internal.ignoreIoExceptions
 import retrofit2.Response
 
 class PostsViewModel(private val repository: PostRepository) : ViewModel() {
 
-    var postsResponse: MutableLiveData<Response<List<Post>>> = MutableLiveData()
+    private var postsResponse: MutableLiveData<Response<List<Post>>> = MutableLiveData()
     var selectedPost: MutableLiveData<Response<Post>> = MutableLiveData()
 
-    var userPostsResponse: MutableLiveData<Response<List<Post>>> = MutableLiveData()
+    private var userPostsResponse: MutableLiveData<Response<List<Post>>> = MutableLiveData()
 
-    val myCustomPosts: MutableLiveData<Response<List<Post>>> = MutableLiveData()
+    private val myCustomPosts: MutableLiveData<Response<List<Post>>> = MutableLiveData()
     val myCustomPosts2: MutableLiveData<Response<List<Post>>> = MutableLiveData()
 
     val myResponse: MutableLiveData<Response<Post>> = MutableLiveData()

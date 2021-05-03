@@ -39,15 +39,15 @@ class PostActivity : AppCompatActivity() {
         binding.apply {
             btnSavePost.setOnClickListener {
                 if(postId == -1) {
-                    var newPost = NewPost(
+                    val newPost = NewPost(
                         etPostTitle.text.toString(),
                         etPostBody.text.toString(),
                         1
                     )
-                    var postId = placeNewPost(newPost)
+                    val postId = placeNewPost(newPost)
                     Log.d(POST_TAG, "Post ID: $postId")
                 } else {
-                    var post = Post(
+                    val post = Post(
                         postId,
                         etPostTitle.text.toString(),
                         etPostBody.text.toString(),
@@ -90,7 +90,7 @@ class PostActivity : AppCompatActivity() {
     }
 
     private fun placeNewPost(newPost: NewPost) : Int? {
-        var createdPost: Post? = null
+        var createdPost: Post?
         var newPostId: Int? = null
         lifecycleScope.launchWhenCreated {
             val response = try {
@@ -126,7 +126,7 @@ class PostActivity : AppCompatActivity() {
                 return@launchWhenCreated
             }
             if (response.isSuccessful && response.body() != null) {
-                var rewritePost = response.body()!!
+                val rewritePost = response.body()!!
                 Log.d(TAG, "Newly created post: $rewritePost")
             } else {
                 Log.e(TAG, "Response was not successful. Error code: ${response.code()}")

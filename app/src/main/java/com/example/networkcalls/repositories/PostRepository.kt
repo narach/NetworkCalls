@@ -3,7 +3,6 @@ package com.example.networkcalls.repositories
 import com.example.networkcalls.entities.Post
 import com.example.networkcalls.network.RetrofitInstance
 import retrofit2.Response
-import retrofit2.http.Body
 
 class PostRepository {
     suspend fun getPosts(): Response<List<Post>> {

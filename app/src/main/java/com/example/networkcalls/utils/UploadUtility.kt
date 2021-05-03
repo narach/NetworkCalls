@@ -11,12 +11,11 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
-class UploadUtility(activity: Activity) {
+class UploadUtility(private var activity: Activity) {
 
-    var activity = activity
-    var dialog: ProgressDialog? = null
-    var serverURL: String = "https://cardiary.herokuapp.com/api/v1/cars/1/photos"
-    val client = OkHttpClient()
+    private var dialog: ProgressDialog? = null
+    private var serverURL: String = "https://cardiary.herokuapp.com/api/v1/cars/1/photos"
+    private val client = OkHttpClient()
 
     fun uploadFile(sourceFilePath: String, uploadFileName: String? = null) {
         uploadFile(File(sourceFilePath), uploadFileName)
@@ -24,7 +23,7 @@ class UploadUtility(activity: Activity) {
 
     fun uploadFile(sourceFileUri: Uri, uploadFileName: String? = null) {
         val pathFromUri = URIPathHelper().getPath(activity, sourceFileUri)
-        uploadFile(File(pathFromUri), uploadFileName)
+        uploadFile(File(pathFromUri!!), uploadFileName)
     }
 
     fun uploadFile(sourceFile: File, uploadFileName: String? = null) {
@@ -71,13 +70,13 @@ class UploadUtility(activity: Activity) {
         return type
     }
 
-    fun showToast(message: String) {
+    private fun showToast(message: String) {
         activity.runOnUiThread {
             Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
         }
     }
 
-    fun toggleProgressDialog(show: Boolean) {
+    private fun toggleProgressDialog(show: Boolean) {
         activity.runOnUiThread {
             if (show) {
                 dialog = ProgressDialog.show(activity, "", "Uploading file...", true)

@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity(), ICommunication {
             btnSelectUser.setOnClickListener {
                 val postId = etUserSelect.text.toString().toInt()
                 viewModel.getPostById(postId)
-                viewModel.selectedPost.observe(this@MainActivity, Observer { response ->
+                viewModel.selectedPost.observe(this@MainActivity, { response ->
                     if (response.isSuccessful) {
                         Log.d(TAG, "Selected post: ${response.body()}")
                     } else {
