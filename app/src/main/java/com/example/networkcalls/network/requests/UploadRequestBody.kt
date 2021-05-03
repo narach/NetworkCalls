@@ -1,4 +1,4 @@
-package com.example.networkcalls.network
+package com.example.networkcalls.network.requests
 
 import android.os.Handler
 import android.os.Looper

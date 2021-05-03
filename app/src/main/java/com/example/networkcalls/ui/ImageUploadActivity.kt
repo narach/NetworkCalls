@@ -17,8 +17,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.android.volley.toolbox.Volley
 import com.example.networkcalls.databinding.ActivityImageUploadBinding
 import com.example.networkcalls.network.*
+import com.example.networkcalls.network.api.UploadPhotoApi
 import com.example.networkcalls.network.requests.FileDataPart
+import com.example.networkcalls.network.requests.UploadRequestBody
 import com.example.networkcalls.network.requests.VolleyFileUploadRequest
+import com.example.networkcalls.network.responses.UploadResponse
 import com.example.networkcalls.repositories.CarsRepository
 import com.example.networkcalls.utils.UploadUtility
 import com.example.networkcalls.viewmodels.CarsViewModel

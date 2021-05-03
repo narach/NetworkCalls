@@ -1,4 +1,4 @@
-package com.example.networkcalls.network
+package com.example.networkcalls.network.api
 
 import com.example.networkcalls.entities.cardiary.Car
 import retrofit2.Response

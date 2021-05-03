@@ -8,4 +8,6 @@ object Constants {
     val openWeatherApiKey = "77abae324159184bf46027bd23ea87a7"
     // Базовый урл для OpenWeather
     val openWeatherBaseURL = "https://api.openweathermap.org/data/2.5/"
+
+    val carsServiceBaseUrl = "https://cardiary.herokuapp.com/api/v1/"
 }

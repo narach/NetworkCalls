@@ -1,5 +1,7 @@
-package com.example.networkcalls.network
+package com.example.networkcalls.network.api
 
+import com.example.networkcalls.network.interceptors.FormDataInterceptor
+import com.example.networkcalls.network.responses.UploadResponse
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import retrofit2.Call

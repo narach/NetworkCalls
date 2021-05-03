@@ -1,4 +1,4 @@
-package com.example.networkcalls.network
+package com.example.networkcalls.network.api
 
 import com.example.networkcalls.entities.NewPost
 import com.example.networkcalls.entities.Post
